@@ -1,3 +1,6 @@
+
+import java.util.concurrent.Semaphore;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -22,19 +25,38 @@ public class DatiCondivisi {
     int maxElem=10000000;
     String schermo[];
     int p;
-
+ 
+      private Semaphore sDin;
+    private Semaphore sDon;
+    private Semaphore sDan;
+    
     public DatiCondivisi() {
         this.schermo=new String [maxElem];
         this.p=0;
+        
+        sDin = new Semaphore(0);
+        sDon = new Semaphore(0);
+        sDan = new Semaphore(0);
     }
-
-    public DatiCondivisi(int contaDIN, int contaDON, int contaDAN) {
-        this.contaDIN = contaDIN;
-        this.contaDON = contaDON;
-        this.contaDAN = contaDAN;
-        this.schermo=new String [maxElem];
-        this.p=0;
+public void waitSDin() throws InterruptedException {
+        sDin.acquire();
     }
+    public void signalSDin() {
+        sDin.release();
+    }
+    public void waitSDon() throws InterruptedException {
+        sDon.acquire();
+    }
+    public void signalSDon() {
+        sDon.release();
+    }
+    public void waitSDan() throws InterruptedException {
+        sDan.acquire();
+    }
+    public void signalSDan() {
+        sDan.release();
+    }
+    
 
     public int getContaDIN() {
         return contaDIN;
