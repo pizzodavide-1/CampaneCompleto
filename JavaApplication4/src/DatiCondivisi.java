@@ -14,29 +14,69 @@ import java.util.concurrent.Semaphore;
  * 
  */
 public class DatiCondivisi {
-    /**
-     * @author Princess Joy Padua 
-     * 
-     * Creo variabili di tipo int che mi vanno a contare i suoni effettuati dai thread.
-     * 
-     */
-    int contaDIN=0,contaDON=0,contaDAN=0;
-    
-    int maxElem=10000000;
-    String schermo[];
-    int p;
+
+    private String rintocco;
  
       private Semaphore sDin;
     private Semaphore sDon;
     private Semaphore sDan;
     
+    private Semaphore s1;
+    private Semaphore s2;
+    private Semaphore s3;
+    private Semaphore sV1;
+    private Semaphore sV2;
+    
     public DatiCondivisi() {
-        this.schermo=new String [maxElem];
-        this.p=0;
-        
         sDin = new Semaphore(0);
         sDon = new Semaphore(0);
         sDan = new Semaphore(0);
+        
+        s1 = new Semaphore(1);
+        s2 = new Semaphore(0);
+        s3 = new Semaphore(0);
+        
+        sV1 = new Semaphore(0);
+        sV2 = new Semaphore(1);
+    }
+    
+     public void waitSV1() throws InterruptedException {
+        sV1.acquire();
+    }
+
+    public void signalSV1() {
+        sV1.release();
+    }
+    
+    public void waitSV2() throws InterruptedException {
+        sV2.acquire();
+    }
+
+    public void signalSV2() {
+        sV2.release();
+    }
+    public void waitS1() throws InterruptedException {
+        s1.acquire();
+    }
+
+    public void signalS1() {
+        s1.release();
+    }
+
+    public void waitS2() throws InterruptedException {
+        s2.acquire();
+    }
+
+    public void signalS2() {
+        s2.release();
+    }
+
+    public void waitS3() throws InterruptedException {
+        s3.acquire();
+    }
+
+    public void signalS3() {
+        s3.release();
     }
 public void waitSDin() throws InterruptedException {
         sDin.acquire();
@@ -56,67 +96,10 @@ public void waitSDin() throws InterruptedException {
     public void signalSDan() {
         sDan.release();
     }
-    
-
-    public int getContaDIN() {
-        return contaDIN;
+    public synchronized void setRintocco(String x) {
+        rintocco = x;
     }
-
-    public void setContaDIN(int contaDIN) {
-        this.contaDIN = contaDIN;
-    }
-
-    public int getContaDON() {
-        return contaDON;
-    }
-
-    public void setContaDON(int contaDON) {
-        this.contaDON = contaDON;
-    }
-
-    public int getContaDAN() {
-        return contaDAN;
-    }
-
-    public void setContaDAN(int contaDAN) {
-        this.contaDAN = contaDAN;
-    }
-    
-    
-    
-    /**
-     * 
-     * @param c Indico la scelta effettuata dall'untete fatta nel main
-     * 
-     * @return indica se hai vinto o no.
-     * 
-     */
-    public synchronized String verificaSeHaiVinto(int c) {
-        String x="Hai Perso";
-        if(c==1 && contaDIN>contaDON && contaDIN>contaDAN) {
-            x="Hai Vinto!";
-        }
-        if(c==2 && contaDON>contaDIN && contaDON>contaDAN) {
-            x="Hai Vinto!";
-        }
-        if(c==3 && contaDAN>contaDON && contaDAN>contaDON) {
-            x="Hai Vinto!";
-        }
-        return x;
-    }
-    public synchronized void aggiungi(String x) {
-        if (p >= maxElem)
-            p = 0;
-        schermo[p]=x;
-        p+=1;
-    }
-    public synchronized void printSchermo() {
-        System.out.println("-------------------------------");
-        for (int i = 0; i < p; i ++) {
-            System.out.print(schermo[i] + " ");
-            if (i % 20 == 19)
-                System.out.println("");
-        }
-        System.out.println("\n-------------------------------");
+    public synchronized String getRintocco() {
+        return rintocco;
     }
 }

@@ -17,29 +17,11 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ThSuono extends Thread {
 
-    /**
-     * Dichiaro una variabile di tipo int che servirà a scegliere se attivare
-     * solo lo sleep oppure sleep+yield.
-     *
-     */
-    private int scelta;
-    /**
-     * Dichiaro variabile di tipo String che decide quale suono eseguire.
-     */
     private String suono;
 
-    /**
-     * Creo classe di tipo DatiCondivi che va a contare i suoni effettuati.
-     */
+ 
     DatiCondivisi ptrdati;
 
-    /**
-     * @param p
-     * @brief Costruttore con parametri
-     *
-     * @param x Gli passo il suo da eseguire
-     * @param y Scelta opzione
-     */
     public ThSuono(String x, DatiCondivisi p) {
         suono = x;
         ptrdati = p;
@@ -50,24 +32,30 @@ public class ThSuono extends Thread {
      *
      */
     public void run() {
-        boolean verify = true;
+        boolean controllo = true;
         try {
-            while (verify == true) {
-                ptrdati.aggiungi(suono);
-                if (suono.equals("DIN")) {
-                    ptrdati.setContaDIN(ptrdati.getContaDIN() + 1);
+            while (controllo == true) {
+                
+               switch (this.suono) {
+                    case "DIN":
+                        ptrdati.waitS1();
+                        continua();
+                        ptrdati.signalS2();
+                        break;
+                        
+                    case "DON":
+                        ptrdati.waitS2();
+                        continua();
+                        ptrdati.signalS3();
+                        break;
+                        
+                    case "DAN":
+                        ptrdati.waitS3();
+                        continua();
+                        ptrdati.signalS1();
+                        break;
                 }
-                if (suono.equals("DON")) {
-                    ptrdati.setContaDON(ptrdati.getContaDON() + 1);
-                }
-                if (suono.equals("DAN")) {
-                    ptrdati.setContaDAN(ptrdati.getContaDAN() + 1);
-                }
-
-                int min = 100;
-                int max = 1000;
-                int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
-                sleep(randomNum);
+            Thread.sleep((int) (Math.random() * 10));
 
                 if (Thread.currentThread().isInterrupted()) {
                     break;
@@ -86,6 +74,18 @@ public class ThSuono extends Thread {
             case "DAN":
                 ptrdati.signalSDan();
                 break;
+
+        }
+    }
+
+    public void continua() {
+        try {
+            
+            ptrdati.waitSV2();
+            ptrdati.setRintocco(suono);
+            ptrdati.signalSV1();
+            
+        } catch (InterruptedException ex) {
 
         }
     }
